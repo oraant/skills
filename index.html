@@ -1,1 +1,107 @@
-hello world.
+<canvas id="myCanvas" width="1200" height="800"
+style="border:1px solid #000000;">
+</canvas>
+
+<script>
+    
+    function draw_skill(ctx,x,y,skill){
+        // 保留起初的配置
+        fillStyle = ctx.fillStyle;
+        font = ctx.font;
+        
+        id = skill.id;
+        name = skill.name;
+        level = skill.level;
+        levels = skill.levels;
+        
+        // 画出基本的技能方块
+        var w=300,h=200;
+        ctx.fillStyle="#eee";
+        ctx.fillRect(x,y,w,h);
+        
+        // 写出头部内容
+        var head = id + " | " + name + " | " + level;
+        ctx.fillStyle="#222";
+        ctx.font="15px Arial";
+        ctx.fillText(head,x+20,y+35);
+        
+        // 画出分割线部分
+        ctx.fillStyle="#888";
+        ctx.fillRect(x,y+55,w,1);
+        
+        // 写出身体部分
+        var lv = level-1;
+        var body = levels[lv].desc;
+        ctx.fillStyle="#222";
+        ctx.font="10px Arial";
+        ctx.fillText(body,x+20,y+85);
+        
+        // 画出分割线部分
+        ctx.fillStyle="#888";
+        ctx.fillRect(x,y+155,w,1);
+        
+        // 画出等级部分
+        for (i in levels){
+            ctx.fillStyle="#3e3";
+            ctx.fillRect(x+10,y+165,20,20);
+            ctx.fillStyle="#222";
+            ctx.fillText(levels[i].lv,x+15,y+180);
+            x = x+25;
+        }
+        
+        // 恢复起初的配置
+        ctx.fillStyle = fillStyle;
+        ctx.font = font;
+    }
+
+    var skills = [{
+            "id":1,
+            "name":"Oracle安装",
+            "level":3,
+            "levels":[{
+                    "lv":1,
+                    "desc":"只会安装单机，只会安装一种Linux系统",
+                    "require":[]
+                },{
+                    "lv":2,
+                    "desc":"只会安装单机，可以安装多种操作系统",
+                    "require":[{"reqid":1,"reqlv":1}]
+                },{
+                    "lv":3,
+                    "desc":"可以安装RAC，可以安装多种操作系统",
+                    "require":[{"reqid":1,"reqlv":2}]
+            }]
+        },{
+            "id":2,
+            "name":"Oracle管理",
+            "level":2,
+            "levels":[{
+                    "lv":1,
+                    "desc":"知道有关的参数配置",
+                    "require":[{"reqid":1,"reqlv":2}]
+                },{
+                    "lv":2,
+                    "desc":"知道大量的参数配置",
+                    "require":[{"reqid":1,"reqlv":3},{"reqid":2,"reqlv":1}]
+                },{
+                    "lv":3,
+                    "desc":"知道全部的参数配置",
+                    "require":[{"reqid":2,"reqlv":2}]
+                }]
+        }]
+    
+    var c=document.getElementById("myCanvas");
+    var ctx=c.getContext("2d");
+    ctx.fillStyle="#333";
+    ctx.font="30px Arial";
+    
+    var x=100,y=100,step=300;
+    for (i in skills){
+        skill = skills[i];
+        
+        draw_skill(ctx,x,y,skill);
+        
+        console.log(y);
+        y = y + step;
+    }
+</script>
