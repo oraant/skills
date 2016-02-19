@@ -28,24 +28,57 @@
             ["Business requirements :","User requirements gathering","Project management"]
             ]
     
+        var null_metris = [];
+    
         function changeLevel(level){
             lv = level.substr(5,1)*1 + 1;
             if (lv == 6){lv = 0}
             return "level" + lv;
         }
         
+        
+        
         $(document).ready(function(){
         
+            // read metris and generate html elements.
             for (i in metris){
                 $("#mainTab").append('<div class="row-fluid"><div class="span12 tag-row"></div></div>')
                 for (j in metris[i]){
                     text=metris[i][j];
                     if (j==0){className="btn btn-sm lvhead"} else{className="btn btn-sm btn-default level0"}
-                    $("#mainTab .row-fluid:last-of-type .tag-row:last-of-type").append('<button class="' + className + '" type="button">' + text + '</button> ');
+                    $("#mainTab .row-fluid:last-of-type .tag-row:last-of-type").append('<button class="' + className + '" id="' + text.toLowerCase().replace(/\s/g,"_")  + '" type="button">' + text + '</button> ');
                     
                 }
             }
-        
+            
+            // get parameters or not.
+            params=decodeURI(window.location.search.substr(1));
+            if (params==""){
+                display = "edit";
+                name = "";
+            }else{
+                params = params.split(';');
+                display = params[0];
+                name = params[1];
+                skills = params[2].split(',');
+            }
+            
+            // 
+            for (i=0; i<skills.length; i++){
+                skill = skills[i].split('=');
+                skill_name = "#" + skill[0].toLowerCase().replace(/\s/g,"_");
+                skill_level = "level" + skill[1];
+                skill_lable = $(skill_name)
+                
+                if (skill_lable.length==0){
+                    null_metris.push(skill[0]);
+                }else{
+                    skill_lable.removeClass("level0").addClass(skill_level);
+                }
+            }
+            console.log(null_metris)
+            
+            // register click listener.
             $(".btn").click(function(){
                 classNames = $(this).attr("class").split(" ");
                 levelName = classNames.filter(function (x){return x.substr(0,5)=="level"})[0];
